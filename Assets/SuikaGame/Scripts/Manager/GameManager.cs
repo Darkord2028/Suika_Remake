@@ -43,6 +43,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] LayerMask hitLayerMask;
     private float currentDeathTimer;
 
+    private dreamloLeaderBoard LeaderBoard;
+
     #region Unity Callback Functions
 
     private void Awake()
@@ -60,7 +62,6 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         poolManager = GameObject.FindFirstObjectByType<ObjectPoolManager>();
-
         InitializePoolObjects();
     }
 
