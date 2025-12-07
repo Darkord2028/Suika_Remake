@@ -34,15 +34,6 @@ public class GameManager : MonoBehaviour
     public static int highScore = 0;
     public bool gameOver = false;
 
-    [Header("Water Data")]
-    [SerializeField] Transform waterTransform;
-    [SerializeField] [Range(0, 10)] float waterFillSpeed;
-    [SerializeField] float waterFillRate;
-    [SerializeField] float maxWaterHeight;
-    [SerializeField] float minWaterHeight;
-    [SerializeField] float waterHeightOnWrongAnswer;
-    private float currentFillTimer;
-
     [Header("Game Over Data")]
     [SerializeField] Transform rightDeathCheckPosition;
     [SerializeField] Transform leftDeathCheckPosition;
@@ -51,8 +42,6 @@ public class GameManager : MonoBehaviour
     [SerializeField] float deathCheckTime;
     [SerializeField] LayerMask hitLayerMask;
     private float currentDeathTimer;
-
-    ReactToUnity reactToUnity;
 
     #region Unity Callback Functions
 
@@ -71,25 +60,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         poolManager = GameObject.FindFirstObjectByType<ObjectPoolManager>();
-        reactToUnity = ReactToUnity.instance;
 
         InitializePoolObjects();
-        DecreaseWaterAtOnce();
-    }
-
-    private void OnEnable()
-    {
-        ReactToUnity.OnQuizAnswered += OnAnswer;
-    }
-
-    private void OnDisable()
-    {
-        ReactToUnity.OnQuizAnswered -= OnAnswer;
     }
 
     private void Update()
     {
-        IncreaseWaterOverTime();
         CheckForGameEnd();
     }
 
@@ -188,24 +164,6 @@ public class GameManager : MonoBehaviour
         scoreText.text = highScore.ToString();
     }
 
-    private void IncreaseWaterOverTime()
-    {
-        if (Time.time > waterFillRate + currentFillTimer && !gameOver)
-        {
-            currentFillTimer = Time.time;
-
-            if(waterTransform.position.y < maxWaterHeight)
-            {
-                waterTransform.position = new Vector3(waterTransform.position.x, waterTransform.position.y + (waterFillSpeed / 100), waterTransform.position.z);
-            }
-        }
-    }
-
-    private void DecreaseWaterAtOnce()
-    {
-        waterTransform.position = new Vector3(waterTransform.position.x, minWaterHeight, waterTransform.position.z);
-    }
-
     public void AddAnimalToList(GameObject gameObject = null)
     {
         if(gameObject == null)
@@ -260,41 +218,14 @@ public class GameManager : MonoBehaviour
     public void endGame() 
     {
         gameOver = true;
-        playAgainButton.SetActive(true);
+        //playAgainButton.SetActive(true);
+        Debug.Log("Trigger Game Over");
         inputManager.SetPlayerInput(false);
     }
 
     public void ReloadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    public void AskQuestion() 
-    {
-        reactToUnity.AskQuestion_Unity();
-
-#if UNITY_EDITOR
-        playAgainButton.SetActive(false);
-        gameOver = false;
-        waterTransform.position = new Vector2(waterTransform.position.x, waterHeightOnWrongAnswer);
-        StartCoroutine(PlayerInputDelay(inputDelay));
-#endif
-
-    }
-
-    private void OnAnswer(bool isCorrect)
-    {
-        playAgainButton.SetActive(false);
-        gameOver = false;
-        if (isCorrect)
-        {
-            waterTransform.position = new Vector2(waterTransform.position.x, minWaterHeight);
-        }
-        else
-        {
-            waterTransform.position = new Vector2(waterTransform.position.x, waterHeightOnWrongAnswer);
-        }
-        StartCoroutine(PlayerInputDelay(inputDelay));
     }
 
     private IEnumerator PlayerInputDelay(float delay)

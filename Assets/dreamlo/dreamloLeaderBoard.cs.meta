@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 7f579fefeba774393965b534c29d2e83
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 3862
+  packageName: dreamlo.com - Free Instant Leaderboards and Promocode System
+  packageVersion: 3.0
+  assetPath: Assets/dreamlo/dreamloLeaderBoard.cs
+  uploadId: 329556

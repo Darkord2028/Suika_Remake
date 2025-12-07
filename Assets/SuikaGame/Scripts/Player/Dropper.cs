@@ -106,7 +106,7 @@ public class Dropper : MonoBehaviour
     private void UpdateAnimalDropSprites()
     {
         secondAnimalImage.sprite = gameManager.animalPrefabs[secondRandomInt].GetComponent<SpriteRenderer>().sprite;
-        thirdAnimalImage.sprite = gameManager.animalPrefabs[thirdRandomInt].GetComponent<SpriteRenderer>().sprite;
+        //thirdAnimalImage.sprite = gameManager.animalPrefabs[thirdRandomInt].GetComponent<SpriteRenderer>().sprite;
     }
 
     public void UpdateCheatAnimalSprite(int index)
