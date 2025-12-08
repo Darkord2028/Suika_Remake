@@ -43,7 +43,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] LayerMask hitLayerMask;
     private float currentDeathTimer;
 
-    private dreamloLeaderBoard LeaderBoard;
+    private Leaderboard leaderboard;
 
     #region Unity Callback Functions
 
@@ -61,6 +61,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        leaderboard = GameObject.FindFirstObjectByType<Leaderboard>();
         poolManager = GameObject.FindFirstObjectByType<ObjectPoolManager>();
         InitializePoolObjects();
     }
@@ -221,6 +222,7 @@ public class GameManager : MonoBehaviour
         gameOver = true;
         //playAgainButton.SetActive(true);
         Debug.Log("Trigger Game Over");
+        leaderboard.UpdateLeaderboard(PlayerPrefs.GetString("playerID", "Player"), highScore);
         inputManager.SetPlayerInput(false);
     }
 

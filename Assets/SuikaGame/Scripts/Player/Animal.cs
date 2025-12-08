@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 public class Animal : MonoBehaviour
@@ -16,10 +15,9 @@ public class Animal : MonoBehaviour
 
     private GameManager game;
 
-    // gets game manager
     void Start()
     {
-        game = GameObject.Find("GameManager").GetComponent<GameManager>();
+        game = GameManager.instance;
 
         eyesClose = transform.GetChild(0).gameObject;
         eyesClose.SetActive(false);
