@@ -19,8 +19,8 @@ public struct Highscore
 
 public class Leaderboard : MonoBehaviour
 {
-    const string privateCode = "U8XTCocb50afGaaKDmlENAk1HBfvs4R0eSTwuQaN5cPg";
-    const string publicCode = "693535d08f40bb18643bbbbc";
+    const string privateCode = "rHkf9ZEQBEulslHLr82Kzg7sZUqXRASk6EW9ndkyBKpA";
+    const string publicCode = "69368f598f40bb186455d974";
     const string webURL = "http://dreamlo.com/lb/";
 
     private Highscore[] highScoresList = new Highscore[0];

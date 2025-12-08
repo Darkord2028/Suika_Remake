@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -29,8 +30,8 @@ public class GameManager : MonoBehaviour
 
     [Header("UI")]
     [SerializeField] TMP_Text scoreText;
-    [SerializeField] GameObject playAgainButton;
-    [SerializeField] GameObject gameOverButton;
+    [SerializeField] Button playAgainButton;
+    [SerializeField] GameObject gameOverBackground;
     public static int highScore = 0;
     public bool gameOver = false;
 
@@ -57,6 +58,11 @@ public class GameManager : MonoBehaviour
         {
             Destroy(instance);
         }
+
+        playAgainButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene(0);
+        });
     }
 
     private void Start()
@@ -220,10 +226,11 @@ public class GameManager : MonoBehaviour
     public void endGame() 
     {
         gameOver = true;
-        //playAgainButton.SetActive(true);
-        Debug.Log("Trigger Game Over");
-        leaderboard.UpdateLeaderboard(PlayerPrefs.GetString("playerID", "Player"), highScore);
+        allClearParticleSystem.Play();
         inputManager.SetPlayerInput(false);
+        gameOverBackground.SetActive(true);
+        leaderboard.UpdateLeaderboard(PlayerPrefs.GetString("playerID", "Player"), highScore);
+        //Debug.Log("Trigger Game Over");
     }
 
     public void ReloadScene()
