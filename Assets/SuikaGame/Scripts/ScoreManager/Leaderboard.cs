@@ -21,7 +21,7 @@ public class Leaderboard : MonoBehaviour
 {
     const string privateCode = "rHkf9ZEQBEulslHLr82Kzg7sZUqXRASk6EW9ndkyBKpA";
     const string publicCode = "69368f598f40bb186455d974";
-    const string webURL = "http://dreamlo.com/lb/";
+    const string webURL = "https://suika-leaderboard-worker.abhijdicaprio.workers.dev/dreamlo/";
 
     private Highscore[] highScoresList = new Highscore[0];
 
@@ -44,7 +44,8 @@ public class Leaderboard : MonoBehaviour
 
     private IEnumerator UploadHighScore(string username, int score)
     {
-        string url = webURL + privateCode + "/add/" + UnityWebRequest.EscapeURL(username) + "/" + score;
+        // Use worker: worker will inject private key server-side for 'add'
+        string url = webURL + "add/" + UnityWebRequest.EscapeURL(username) + "/" + score;
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             yield return www.SendWebRequest();
@@ -55,7 +56,7 @@ public class Leaderboard : MonoBehaviour
             }
             else
             {
-                Debug.Log("Error uploading: " + www.error);
+                Debug.Log("Error uploading: " + www.error + " | " + www.downloadHandler.text);
             }
         }
     }
@@ -64,10 +65,10 @@ public class Leaderboard : MonoBehaviour
     {
         StartCoroutine(DownloadHighScore());
     }
-
     private IEnumerator DownloadHighScore()
     {
-        string url = webURL + publicCode + "/pipe/";
+        // Request through the worker which forwards to dreamlo public pipe endpoint
+        string url = webURL + "lb/" + publicCode + "/pipe/";
         using (UnityWebRequest www = UnityWebRequest.Get(url))
         {
             yield return www.SendWebRequest();
@@ -79,10 +80,11 @@ public class Leaderboard : MonoBehaviour
             }
             else
             {
-                Debug.Log("Error downloading: " + www.error);
+                Debug.Log("Error downloading: " + www.error + " | " + www.downloadHandler.text);
             }
         }
     }
+
 
     private void FormatHighscores(string textStream)
     {
@@ -161,20 +163,20 @@ public class Leaderboard : MonoBehaviour
 
     private IEnumerator UploadTopThreeCoroutine()
     {
-        using (UnityWebRequest clearReq = UnityWebRequest.Get(webURL + privateCode + "/clear"))
+        using (UnityWebRequest clearReq = UnityWebRequest.Get(webURL + "clear"))
         {
             yield return clearReq.SendWebRequest();
 
             if (clearReq.result != UnityWebRequest.Result.Success)
             {
-                Debug.Log("Failed to clear existing highscores: " + clearReq.error);
+                Debug.Log("Failed to clear existing highscores: " + clearReq.error + " | " + clearReq.downloadHandler.text);
                 yield break;
             }
         }
 
         for (int i = 0; i < highScoresList.Length && i < 3; i++)
         {
-            string url = webURL + privateCode + "/add/" +
+            string url = webURL + "add/" +
                          UnityWebRequest.EscapeURL(highScoresList[i].username) + "/" +
                          highScoresList[i].score;
 
@@ -184,12 +186,13 @@ public class Leaderboard : MonoBehaviour
 
                 if (uploadReq.result != UnityWebRequest.Result.Success)
                 {
-                    Debug.Log("Failed to upload highscore: " + uploadReq.error);
+                    Debug.Log("Failed to upload highscore: " + uploadReq.error + " | " + uploadReq.downloadHandler.text);
                 }
             }
         }
 
-        Debug.Log("Uploaded only top three highscores.");
+        Debug.Log("Uploaded top three highscores.");
         GetHighScore();
     }
+
 }
